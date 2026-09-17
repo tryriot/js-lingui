@@ -1,4 +1,8 @@
-import { compileScript, type SFCDescriptor } from "@vue/compiler-sfc"
+import {
+  compileScript,
+  type SFCDescriptor,
+  type SFCScriptCompileOptions,
+} from "@vue/compiler-sfc"
 
 export type ScriptTarget = {
   source: string
@@ -30,11 +34,11 @@ export function compileScriptSetup(
   }
 
   try {
-    const compiled = compileScript(descriptor, {
+    const options: SFCScriptCompileOptions = {
       id: filename,
       sourceMap: true,
-      reactivityTransform,
-    })
+    }
+    const compiled = compileScript(descriptor, options)
 
     return [
       {

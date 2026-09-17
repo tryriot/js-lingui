@@ -44,7 +44,9 @@
   "dependencies": {
     "@lingui/cli": "workspace:*",
     "@lingui/conf": "workspace:*",
-    "@vue/compiler-sfc": "^3.2.47"
+    "@lingui/vue": "workspace:*",
+    "@vue/compiler-core": "^3.4.0",
+    "@vue/compiler-sfc": "^3.4.0"
   },
   "devDependencies": {
     "@lingui/babel-plugin-extract-messages": "workspace:*",
