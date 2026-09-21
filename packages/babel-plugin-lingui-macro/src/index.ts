@@ -276,7 +276,12 @@ export default function ({
       }
     } else {
       // useLingui might ask for identifiers which are not direct child of macro
-      identPath = identPath || getIdentifierPath(path.getFunctionParent(), node)
+      identPath =
+        identPath ||
+        getIdentifierPath(
+          path.getFunctionParent() ?? path.scope.getProgramParent().path,
+          node,
+        )
 
       if (
         config.macro.corePackage.some((moduleSource) =>
