@@ -67,7 +67,7 @@ m = <Plural value={"5"} one={"..."} other={"..."} />
 // with labeled value
 m = <Plural value={{ count: 5 }} one={"..."} other={"..."} />
 
-// @ts-expect-error: Property 'other' is missing in type
+// `other` can be a `#other` slot in a template, which the props can't see
 m = <Plural value={"5"} one={"..."} />
 
 // additional properties
@@ -104,7 +104,7 @@ m = (
 // @ts-expect-error: Type 'number' is not assignable to type 'string | LabeledExpression<string | number>'
 m = <Select value={5} other={"string"} />
 
-// @ts-expect-error: Property 'other' is missing in type
+// `other` can be a `#other` slot in a template, which the props can't see
 m = <Select value={"male"} />
 
 // @ts-expect-error: Property 'value' is missing in type

@@ -25,17 +25,14 @@ type PluralChoiceProps = {
   two?: VNodeChild
   few?: VNodeChild
   many?: VNodeChild
-
-  /** Catch-all option */
-  other: VNodeChild
+  other?: VNodeChild
   /** Exact match form, corresponds to =N rule */
   [digit: `_${number}`]: VNodeChild
 } & CommonProps
 
 type SelectChoiceProps = {
   value: string | LabeledExpression<string | number>
-  /** Catch-all option */
-  other: VNodeChild
+  other?: VNodeChild
   [option: `_${string}`]: VNodeChild
 } & CommonProps
 
