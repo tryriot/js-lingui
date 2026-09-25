@@ -151,6 +151,28 @@ describe("linguiVue vite plugin", () => {
     )
   })
 
+  it("compiles macros in modules imported with a query", async () => {
+    const { mod, warn } = await runVite(
+      "fixtures/query",
+      [
+        linguiVue({
+          cwd: path.resolve(import.meta.dirname, "fixtures/query"),
+          template: false,
+        }),
+      ],
+      { alias },
+    )
+
+    expect(warn).toBe("")
+    expect(mod.greeting).toEqual({
+      id: generateMessageId("Hello"),
+      message: "Hello",
+    })
+    expect(mod.queried).toEqual(mod.greeting)
+    // `?raw` is the source of the file, left as is
+    expect(mod.raw).toContain("msg`Hello`")
+  })
+
   it("compiles macros when @vitejs/plugin-vue is registered after linguiVue", async () => {
     const { mod, warn } = await runVite(
       "fixtures/basic",

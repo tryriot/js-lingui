@@ -36,13 +36,24 @@ export type LinguiVueOptions = {
   macro?: boolean
 }
 
-const moduleRe = /\.(vue|[cm]?[jt]s)$/
-const jsxModuleRe = /\.[cm]?[jt]sx$/
+// Module ids may end with a query. Most queries still load the file as
+// JavaScript, but `otherFormQueryRe` matches the ones that load it as
+// something else (`?raw`, `?url`, an SFC's styles...), which are skipped
+const moduleRe = /\.(vue|[cm]?[jt]s)(\?.*)?$/
+const jsxModuleRe = /\.[cm]?[jt]sx(\?.*)?$/
 const nodeModulesRe = /[\\/]node_modules[\\/]/
+const otherFormQueryRe =
+  /[?&](raw|url|inline|worker|sharedworker)(&|=|$)|[?&]type=style(&|$)/
+const extensionRe = /\.([cm]?[jt]sx?)$/
 
 function getParserPlugins(id: string): ParserPlugin[] {
-  if (/\.tsx$/.test(id)) return ["typescript", "jsx"]
-  if (/\.[cm]?ts$/.test(id)) return ["typescript"]
+  // the extension ends the id (`App.vue?vue&type=script&lang.ts`), or comes
+  // before the query (`module.ts?mock=automock`)
+  const extension =
+    (extensionRe.exec(id) ?? extensionRe.exec(id.replace(/\?.*$/, "")))?.[1] ??
+    ""
+  if (extension.endsWith("tsx")) return ["typescript", "jsx"]
+  if (extension.endsWith("ts")) return ["typescript"]
   return ["jsx"]
 }
 
@@ -173,12 +184,16 @@ export function linguiVue(options: LinguiVueOptions = {}): Plugin[] {
       filter: {
         id: {
           include: [idRe],
-          exclude: [nodeModulesRe],
+          exclude: [nodeModulesRe, otherFormQueryRe],
         },
       },
       async handler(code, id) {
         // Additional check for backward compatibility, not needed for Rolldown powered Vite versions (8+)
-        if (!idRe.test(id) || nodeModulesRe.test(id)) {
+        if (
+          !idRe.test(id) ||
+          nodeModulesRe.test(id) ||
+          otherFormQueryRe.test(id)
+        ) {
           return
         }
 
