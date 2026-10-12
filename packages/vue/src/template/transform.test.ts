@@ -124,6 +124,18 @@ describe("linguiTemplateTransform", () => {
       ).toMatchSnapshot()
     })
 
+    it("ignores the attribute injected by vite-plugin-vue-inspector when comparing same-named elements", () => {
+      expect(
+        errors(
+          `<Plural :value="count">
+            <template #one><b _t="name" data-v-inspector="App.vue:3:9">{{ name }}</b> file</template>
+            <template #other><b _t="name" data-v-inspector="App.vue:4:9">{{ name }}</b> files</template>
+          </Plural>`,
+          { placeholderAttribute: "_t" },
+        ),
+      ).toEqual([])
+    })
+
     it("supports kebab-case and lowercase tags", () => {
       expect(
         code(
