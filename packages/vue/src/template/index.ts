@@ -124,6 +124,11 @@ const reservedAttributes = ["id", "message", "comment", "context"]
 
 const structuralDirectives = ["if", "else", "else-if", "for", "slot"]
 
+// vite-plugin-vue-inspector (bundled in vite-plugin-vue-devtools) rewrites the
+// template source in dev and adds this attribute to every element. Two
+// elements that only differ by it are still the same placeholder.
+const injectedAttributes = new Set(["data-v-inspector"])
+
 type ResolvedOptions = {
   descriptorFields: ResolvedDescriptorFields
   tags: Record<string, JsxMacroName>
@@ -1027,6 +1032,9 @@ function tokenizeElement(
       const serialize = (element: ElementNode) =>
         element.tag +
         element.props
+          .filter(
+            (prop) => isDirective(prop) || !injectedAttributes.has(prop.name),
+          )
           .map((prop) => prop.loc.source)
           .sort()
           .join(" ")
